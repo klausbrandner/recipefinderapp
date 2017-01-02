@@ -10,7 +10,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-
 public class HomeScreen extends AppCompatActivity {
 
     @Override
@@ -18,23 +17,21 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-        recipes.add(new Recipe(1,"Pizza"));
-        recipes.add(new Recipe(2,"Pasta"));
-        recipes.add(new Recipe(3,"Chicken"));
-        recipes.add(new Recipe(4,"Pizza"));
-        recipes.add(new Recipe(5,"Pasta"));
-        recipes.add(new Recipe(6,"Chicken"));
-        recipes.add(new Recipe(7,"Pizza"));
-        recipes.add(new Recipe(8,"Pasta"));
-        recipes.add(new Recipe(9,"Chicken"));
+        RecipeService recipeService = new RecipeService();
 
+        try {
 
-        RecipeAdapter recipesAdapter = new RecipeAdapter(this, recipes);
+            ArrayList<Recipe> recipes = (ArrayList) recipeService.getRecipes();
 
-        ListView listView = (ListView) findViewById(R.id.recipelist);
+            RecipeAdapter recipesAdapter = new RecipeAdapter(this, recipes);
 
-        listView.setAdapter(recipesAdapter);
+            ListView listView = (ListView) findViewById(R.id.recipelist);
+
+            listView.setAdapter(recipesAdapter);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 
