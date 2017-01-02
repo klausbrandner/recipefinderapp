@@ -3,6 +3,7 @@ package com.a5_designs.recipefinder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +19,8 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
         RecipeService recipeService = new RecipeService();
+
+        Log.d("START","application started");
 
         try {
 

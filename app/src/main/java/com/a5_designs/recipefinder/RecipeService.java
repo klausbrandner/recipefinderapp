@@ -1,5 +1,7 @@
 package com.a5_designs.recipefinder;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -118,6 +120,8 @@ public class RecipeService {
 
     private String sendGet(String resource) throws Exception {
 
+
+
         String url = service + resource;
 
         URL obj = new URL(url);
@@ -126,10 +130,14 @@ public class RecipeService {
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", USER_AGENT);
 
+
+
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
+
+
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
