@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -57,6 +59,21 @@ public class HomeScreen extends AppCompatActivity {
             ListView listView = (ListView) findViewById(R.id.recipelist);
             listView.setAdapter(recipesAdapter);
 
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    Recipe r = (Recipe) adapterView.getItemAtPosition(i);
+
+                    Intent selectRecipe = new Intent(HomeScreen.this, DetailActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putSerializable("recipe",r);
+                    selectRecipe.putExtras(myBundle);
+                    startActivity(selectRecipe);
+
+                }
+            });
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -79,7 +96,8 @@ public class HomeScreen extends AppCompatActivity {
                 startActivity(showCategories);
                 return true;
             case R.id.action_add:
-                // do something
+                Intent showAddRecipe = new Intent(HomeScreen.this, AddRecipeActivity.class);
+                startActivity(showAddRecipe);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

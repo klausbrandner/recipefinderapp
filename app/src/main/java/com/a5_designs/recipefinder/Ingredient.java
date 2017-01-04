@@ -1,9 +1,11 @@
 package com.a5_designs.recipefinder;
 
+import java.io.Serializable;
+
 /**
  * Created by Phil on 01.01.2017.
  */
-public class Ingredient {
+public class Ingredient implements Serializable {
 
     private String title;
     private String quantity;
