@@ -1,6 +1,5 @@
 package com.a5_designs.recipefinder;
 
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -19,7 +18,7 @@ public class RecipeService {
 
     private List<Recipe> recipes;
     private List<String> categories;
-    private String service = "http://localhost:4040/";
+    private String service = "http://10.0.2.2:4040/";
     private final String USER_AGENT = "Mozilla/5.0";
     private Gson gson = new Gson();
 
@@ -36,7 +35,8 @@ public class RecipeService {
 
 
     public List<Recipe> getRecipes() throws Exception {
-        String recipesJsonString = sendGet("recipes");
+        String recipesJsonString = new RecipeHttpGetService().execute(service+"recipes").get();
+        //String recipesJsonString = sendGet("recipes");
         List<Recipe> recs = new ArrayList<>();
         Recipe[] recipeArr = gson.fromJson(recipesJsonString, Recipe[].class);
 
@@ -92,13 +92,15 @@ public class RecipeService {
                 "\"categories\": " + categoryString +
                 "}";
 
-        Integer rid = Integer.valueOf(sendPost("recipe", data));
+        Integer rid = Integer.valueOf(new RecipeHttpPostService(data).execute(service+"recipe").get());
+        //Integer rid = Integer.valueOf(sendPost("recipe", data));
         addRecipe(rid, title, photo, description, preparation, 0, ingredients, categories);
 
     }
 
     public List<String> getCategories() throws Exception {
-        String categoriesJsonString = sendGet("categories");
+        String categoriesJsonString = new RecipeHttpGetService().execute(service+"categories").get();
+        //String categoriesJsonString = sendGet("categories");
         List<String> catList = new ArrayList<>();
         String []cats = gson.fromJson(categoriesJsonString, String[].class);
         for (String c : cats) {
@@ -114,8 +116,8 @@ public class RecipeService {
                 "\"rid\": \"" + rid + "\"," +
                 "\"rating\": \"" + rating + "\"" +
                 "}";
-
-        return Double.parseDouble(sendPost("evaluate", data));
+        return Double.parseDouble(new RecipeHttpPostService(data).execute(service+"evaluate").get());
+        // return Double.parseDouble(sendPost("evaluate", data));
     }
 
     private String sendGet(String resource) throws Exception {

@@ -1,11 +1,12 @@
 package com.a5_designs.recipefinder;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * Created by Phil on 01.01.2017.
  */
-public class Recipe {
+public class Recipe implements Serializable {
 
     private int rid;
     private String title;

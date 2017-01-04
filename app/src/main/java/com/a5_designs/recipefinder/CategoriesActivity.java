@@ -17,30 +17,38 @@ public class CategoriesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("All");
-        categories.add("Vegetarian");
-        categories.add("Meat");
-        categories.add("Steak");
-        categories.add("Chicken");
-        categories.add("Healthy");
+        RecipeService recipeService = new RecipeService();
 
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, categories);
+        try {
 
-        ListView listView = (ListView) findViewById(R.id.category_list);
+            // get categories from service
+            ArrayList<String> categories = (ArrayList<String>) recipeService.getCategories();
+            categories.add(0, "All");
 
-        listView.setAdapter(categoryAdapter);
+            // create array adapter for listview
+            ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, categories);
+            ListView listView = (ListView) findViewById(R.id.category_list);
+            listView.setAdapter(categoryAdapter);
 
+            // add click event to list items
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String activeCategory = (String) adapterView.getItemAtPosition(i);
+                    if(activeCategory == "All"){
+                        activeCategory = "";
+                    }
 
-                Intent selectCategory = new Intent(CategoriesActivity.this, HomeScreen.class);
-                startActivity(selectCategory);
+                    Intent selectCategory = new Intent(CategoriesActivity.this, HomeScreen.class);
+                    selectCategory.putExtra("activeCategory",activeCategory);
+                    startActivity(selectCategory);
+                }
+            });
 
-            }
-        });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 }
