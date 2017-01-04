@@ -37,7 +37,8 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
         recipeTitle.setText(currentRecipe.getTitle());
 
         TextView recipeSubtitle = (TextView) listItemView.findViewById(R.id.recipe_subtitle);
-        recipeSubtitle.setText("5 of 5 stars");
+        String stars = String.format("%.1f", currentRecipe.getRating());
+        recipeSubtitle.setText(stars + " of 5 stars");
 
         new ImageManager((ImageView) listItemView.findViewById(R.id.recipe_image)).execute(currentRecipe.getPhoto());
 
