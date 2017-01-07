@@ -1,7 +1,10 @@
 package com.a5_designs.recipefinder;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -22,21 +25,13 @@ public class RecipeService {
     private final String USER_AGENT = "Mozilla/5.0";
     private Gson gson = new Gson();
 
-
-    public RecipeService(List<Recipe> recipes, List<String> categories) {
-        this.categories = categories;
-        this.recipes = recipes;
-    }
-
     public RecipeService() {
         this.recipes = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
 
-
     public List<Recipe> getRecipes() throws Exception {
         String recipesJsonString = new RecipeHttpGetService().execute(service+"recipes").get();
-        //String recipesJsonString = sendGet("recipes");
         List<Recipe> recs = new ArrayList<>();
         Recipe[] recipeArr = gson.fromJson(recipesJsonString, Recipe[].class);
 
@@ -48,11 +43,6 @@ public class RecipeService {
         return this.recipes;
     }
 
-    /*public Recipe getRecipe(int rid) {
-        return recipes.stream().filter(r -> r.getRid() == rid).findFirst().get();
-    }*/
-
-    //addRecipe(rid:number, title:string, photo:string, description:string, preparation:string, rating:number, ingredients:Ingredient[],categories:string[])
     public void addRecipe(int number, String title, String photo, String description, String preparation, double rating, Ingredient[] ingredients, String[] categories) {
         Recipe recipe = new Recipe(number, title, photo, description, preparation, ingredients, rating, categories);
         this.recipes.add(recipe);
@@ -93,14 +83,12 @@ public class RecipeService {
                 "}";
 
         Integer rid = Integer.valueOf(new RecipeHttpPostService(data).execute(service+"recipe").get());
-        //Integer rid = Integer.valueOf(sendPost("recipe", data));
         addRecipe(rid, title, photo, description, preparation, 0, ingredients, categories);
 
     }
 
     public List<String> getCategories() throws Exception {
         String categoriesJsonString = new RecipeHttpGetService().execute(service+"categories").get();
-        //String categoriesJsonString = sendGet("categories");
         List<String> catList = new ArrayList<>();
         String []cats = gson.fromJson(categoriesJsonString, String[].class);
         for (String c : cats) {
@@ -116,68 +104,12 @@ public class RecipeService {
                 "\"rid\": \"" + rid + "\"," +
                 "\"rating\": \"" + rating + "\"" +
                 "}";
-        return Double.parseDouble(new RecipeHttpPostService(data).execute(service+"evaluate").get());
-        // return Double.parseDouble(sendPost("evaluate", data));
+
+        String response = new RecipeHttpPostService(data).execute(service+"evaluate").get();
+
+        JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
+
+        return Double.parseDouble(jobj.get("rating").getAsString());
     }
 
-    private String sendGet(String resource) throws Exception {
-
-
-
-        String url = service + resource;
-
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", USER_AGENT);
-
-
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        return response.toString();
-    }
-
-    private String sendPost(String resource, String data) throws Exception {
-        String url = service + resource;
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-        //add reuqest header
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        con.setDoInput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-
-
-        // Send post request
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(data);
-        wr.flush();
-        wr.close();
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        return response.toString();
-    }
 }

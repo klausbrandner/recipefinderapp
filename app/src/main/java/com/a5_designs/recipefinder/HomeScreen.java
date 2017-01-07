@@ -14,20 +14,11 @@ import java.util.ArrayList;
 
 public class HomeScreen extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+    private RecipeService recipeService = new RecipeService();
+    private ListView listView;
+    private String activeCategory;
 
-        RecipeService recipeService = new RecipeService();
-        String activeCategory = "";
-
-        // receive filter from categoryActivity
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            activeCategory = extras.getString("activeCategory");
-        }
-
+    private void updateRecipeAdapter(){
         try {
 
             // get recipes from service
@@ -56,7 +47,7 @@ public class HomeScreen extends AppCompatActivity {
 
             // create custom ArrayAdapter for ListView
             RecipeAdapter recipesAdapter = new RecipeAdapter(this, recipes);
-            ListView listView = (ListView) findViewById(R.id.recipelist);
+            listView = (ListView) findViewById(R.id.recipelist);
             listView.setAdapter(recipesAdapter);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +68,29 @@ public class HomeScreen extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        updateRecipeAdapter();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home_screen);
+
+        activeCategory = "";
+
+        // receive filter from categoryActivity
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            activeCategory = extras.getString("activeCategory");
+        }
+
+        updateRecipeAdapter();
 
     }
 
