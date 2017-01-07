@@ -1,18 +1,10 @@
 package com.a5_designs.recipefinder;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.util.Arrays;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -23,8 +15,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         final Recipe recipe = (Recipe) getIntent().getSerializableExtra("recipe");
-
-        Log.d("RECIPE","show recipe " + recipe.getTitle());
 
         TextView title = (TextView) findViewById(R.id.titleView);
         title.setText(recipe.getTitle());
@@ -54,7 +44,9 @@ public class DetailActivity extends AppCompatActivity {
                 int value = Math.round(rating);
                 RecipeService recipeService = new RecipeService();
                 try {
-                    recipe.setRating((recipeService.evaluate(recipe.getRid(), value)));
+                    Double newRating = recipeService.evaluate(recipe.getRid(), value);
+                    recipe.setRating(newRating);
+                    ratingValue.setText(String.format("%.1f", recipe.getRating()) + " of 5 stars");
 
                 } catch (Exception e) {
                     e.printStackTrace();
