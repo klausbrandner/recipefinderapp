@@ -21,7 +21,7 @@ public class RecipeService {
 
     private List<Recipe> recipes;
     private List<String> categories;
-    private String service = "http://10.0.2.2:4040/";
+    private String service = "http://35.167.61.204:9000/";
     private final String USER_AGENT = "Mozilla/5.0";
     private Gson gson = new Gson();
 
