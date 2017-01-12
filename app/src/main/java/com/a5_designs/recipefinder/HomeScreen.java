@@ -3,6 +3,7 @@ package com.a5_designs.recipefinder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,9 +15,10 @@ import java.util.ArrayList;
 
 public class HomeScreen extends AppCompatActivity {
 
-    private RecipeService recipeService = new RecipeService();
+    private RecipeService recipeService;
     private ListView listView;
     private String activeCategory;
+    private String fbToken;
 
     private void updateRecipeAdapter(){
         try {
@@ -60,6 +62,7 @@ public class HomeScreen extends AppCompatActivity {
                     Bundle myBundle = new Bundle();
                     myBundle.putSerializable("recipe",r);
                     selectRecipe.putExtras(myBundle);
+                    selectRecipe.putExtra("fbToken",recipeService.getFbToken());
                     startActivity(selectRecipe);
 
                 }
@@ -87,7 +90,13 @@ public class HomeScreen extends AppCompatActivity {
         // receive filter from categoryActivity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            activeCategory = extras.getString("activeCategory");
+            if(extras.getString("activeCategory") != null) {
+                activeCategory = extras.getString("activeCategory");
+            }
+            if(extras.getString("fbToken") != null){
+                fbToken = extras.getString("fbToken");
+                this.recipeService = new RecipeService(fbToken);
+            }
         }
 
         updateRecipeAdapter();
@@ -107,10 +116,14 @@ public class HomeScreen extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_filter:
                 Intent showCategories = new Intent(HomeScreen.this, CategoriesActivity.class);
+                Log.d("SHOWCATEGORIES","token: " + fbToken);
+                showCategories.putExtra("fbToken",fbToken);
                 startActivity(showCategories);
                 return true;
             case R.id.action_add:
                 Intent showAddRecipe = new Intent(HomeScreen.this, AddRecipeActivity.class);
+                Log.d("SHOWADD","token: " + fbToken);
+                showAddRecipe.putExtra("fbToken",fbToken);
                 startActivity(showAddRecipe);
                 return true;
             default:

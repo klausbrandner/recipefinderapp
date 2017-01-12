@@ -8,11 +8,19 @@ import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private RecipeService recipeService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getString("fbToken") != null){
+                this.recipeService = new RecipeService(extras.getString("fbToken"));
+            }
+        }
 
         final Recipe recipe = (Recipe) getIntent().getSerializableExtra("recipe");
 
@@ -42,7 +50,6 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 int value = Math.round(rating);
-                RecipeService recipeService = new RecipeService();
                 try {
                     Double newRating = recipeService.evaluate(recipe.getRid(), value);
                     recipe.setRating(newRating);

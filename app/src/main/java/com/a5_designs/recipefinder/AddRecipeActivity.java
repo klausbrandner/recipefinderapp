@@ -1,18 +1,15 @@
 package com.a5_designs.recipefinder;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +17,7 @@ import java.util.List;
 public class AddRecipeActivity extends AppCompatActivity {
 
 
+    private RecipeService recipeService;
     private String title;
     private String photo;
     private String description;
@@ -30,14 +28,18 @@ public class AddRecipeActivity extends AppCompatActivity {
     private String ingredientQuantity;
     private List <String> categories = new ArrayList<>();
     private String newCategory;
-    Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
-        final RecipeService recipeService = new RecipeService();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getString("fbToken") != null){
+                this.recipeService = new RecipeService(extras.getString("fbToken"));
+            }
+        }
 
         Button btn = (Button) findViewById(R.id.add_ingredients_button);
         final TableLayout tableLayout = (TableLayout) findViewById(R.id.tableLayout);

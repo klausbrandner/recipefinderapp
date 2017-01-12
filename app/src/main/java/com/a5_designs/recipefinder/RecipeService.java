@@ -1,16 +1,8 @@
 package com.a5_designs.recipefinder;
 
-
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +14,21 @@ public class RecipeService {
     private List<Recipe> recipes;
     private List<String> categories;
     private String service = "http://35.167.61.204:9000/";
-    private final String USER_AGENT = "Mozilla/5.0";
     private Gson gson = new Gson();
+    private String fbToken;
 
-    public RecipeService() {
+    public RecipeService(String token) {
         this.recipes = new ArrayList<>();
         this.categories = new ArrayList<>();
+        this.fbToken = token;
+    }
+
+    public String getFbToken(){
+        return this.fbToken;
     }
 
     public List<Recipe> getRecipes() throws Exception {
-        String recipesJsonString = new RecipeHttpGetService().execute(service+"recipes").get();
+        String recipesJsonString = new RecipeHttpGetService().execute(service+"recipes?access_token=" + fbToken).get();
         List<Recipe> recs = new ArrayList<>();
         Recipe[] recipeArr = gson.fromJson(recipesJsonString, Recipe[].class);
 
@@ -82,13 +79,13 @@ public class RecipeService {
                 "\"categories\": " + categoryString +
                 "}";
 
-        Integer rid = Integer.valueOf(new RecipeHttpPostService(data).execute(service+"recipe").get());
+        Integer rid = Integer.valueOf(new RecipeHttpPostService(data).execute(service+"recipe?access_token=" + fbToken).get());
         addRecipe(rid, title, photo, description, preparation, 0, ingredients, categories);
 
     }
 
     public List<String> getCategories() throws Exception {
-        String categoriesJsonString = new RecipeHttpGetService().execute(service+"categories").get();
+        String categoriesJsonString = new RecipeHttpGetService().execute(service+"categories?access_token=" + fbToken).get();
         List<String> catList = new ArrayList<>();
         String []cats = gson.fromJson(categoriesJsonString, String[].class);
         for (String c : cats) {
@@ -105,7 +102,7 @@ public class RecipeService {
                 "\"rating\": \"" + rating + "\"" +
                 "}";
 
-        String response = new RecipeHttpPostService(data).execute(service+"evaluate").get();
+        String response = new RecipeHttpPostService(data).execute(service+"evaluate?access_token=" + fbToken).get();
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
 

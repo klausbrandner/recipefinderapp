@@ -1,6 +1,7 @@
 package com.a5_designs.recipefinder;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 import java.io.BufferedReader;
@@ -29,6 +30,7 @@ class RecipeHttpPostService extends AsyncTask<String, Void, String> {
 
         try {
             URL obj = new URL(url);
+            Log.d("POSTURL",url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             //add reuqest header
