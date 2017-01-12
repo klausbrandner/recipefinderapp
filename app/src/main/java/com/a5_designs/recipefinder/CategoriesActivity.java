@@ -12,17 +12,26 @@ import java.util.ArrayList;
 
 public class CategoriesActivity extends AppCompatActivity {
 
+    private RecipeService recipeService;
+    private String fbToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-        RecipeService recipeService = new RecipeService();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getString("fbToken") != null){
+                fbToken = extras.getString("fbToken");
+                this.recipeService = new RecipeService(fbToken);
+            }
+        }
 
         try {
 
             // get categories from service
-            ArrayList<String> categories = (ArrayList<String>) recipeService.getCategories();
+            ArrayList<String> categories = (ArrayList<String>) this.recipeService.getCategories();
             categories.add(0, "All");
 
             // create array adapter for listview
@@ -42,6 +51,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
                     Intent selectCategory = new Intent(CategoriesActivity.this, HomeScreen.class);
                     selectCategory.putExtra("activeCategory",activeCategory);
+                    selectCategory.putExtra("fbToken",fbToken);
                     startActivity(selectCategory);
                 }
             });

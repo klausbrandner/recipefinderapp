@@ -1,18 +1,12 @@
 package com.a5_designs.recipefinder;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -21,11 +15,6 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * A login screen that offers login via email/password.
@@ -60,7 +49,9 @@ public class LoginActivity extends AppCompatActivity {
                                 "Auth Token: "
                                 + loginResult.getAccessToken().getToken()
                 );
+                Log.d("FACEBOOK","token: " + loginResult.getAccessToken().getToken());
                 Intent homeScreen = new Intent(LoginActivity.this, HomeScreen.class);
+                homeScreen.putExtra("fbToken",loginResult.getAccessToken().getToken());
                 startActivity(homeScreen);
             }
 
